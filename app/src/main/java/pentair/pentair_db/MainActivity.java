@@ -1,15 +1,18 @@
 package pentair.pentair_db;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String  ARTIST_NAME ="ArtistName";
     public static final String  ARTIST_ID ="ArtistId";
 
+    TextView textView;
     EditText editText;
     Spinner spinner;
     Button addArtist;
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
          database = FirebaseDatabase.getInstance();
          ref = database.getReference("artist");
@@ -63,17 +68,43 @@ public class MainActivity extends AppCompatActivity {
 
        }
    });
+   artistListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+       @Override
+       public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+           artist artist = artistlist.get(i);
+           showUpdateDialog(artist.artistId,artist.artistName);
+           return false;
+       }
+   });
+   }
+
+   private void showUpdateDialog(final String artistId, String artistName){
+
+       AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+       LayoutInflater inflater =  getLayoutInflater();
+       View dialogView= inflater.inflate(R.layout.update_dialog,null);
+       alertDialog.setView(dialogView);
+       final EditText  updateText   = dialogView.findViewById(R.id.updateText);
+       final Spinner updateSpinner = dialogView.findViewById(R.id.updateSpinner);
+       final  Button updateButton = dialogView.findViewById(R.id.updateButton);
+
+       alertDialog.setTitle("updating artist"+ artistName);
+       final AlertDialog alertDialog1 = alertDialog.create();
+       alertDialog1.show();
+       updateButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               String name = updateText.getText().toString().trim();
+               String genre =updateSpinner.getSelectedItem().toString();
+               updateArtist(name,artistId,genre);
+               alertDialog1.dismiss();
+           }
+       });
 
 
-
-
-
-
-    }
-
-
-
-
+   }
 
 
 
@@ -91,9 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else{
             Toast.makeText(this,"fill name",Toast.LENGTH_SHORT).show();
-
-
-        }
+            }
 
     }
 
@@ -109,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
                         artistlist.add(artist);
                         artist_list_adapter adapter = new artist_list_adapter(MainActivity.this, artistlist);
                         artistListView.setAdapter((adapter));
-
-
-                    }
+                        }
             }
 
             @Override
@@ -120,6 +147,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private  void updateArtist(String name,String id, String genre){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("artist").child(id);
+        artist artist = new artist(name,id,genre);
+        myRef.setValue(artist);
+        Toast.makeText(this, "update complete", Toast.LENGTH_SHORT).show();
+        myRef.setValue("Hello, World!");
+
+
+    }
+
+
 }
 
 

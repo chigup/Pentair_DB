@@ -12,8 +12,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class addTrackActitvty extends AppCompatActivity {
 
@@ -25,7 +31,7 @@ public class addTrackActitvty extends AppCompatActivity {
     ListView listViewTrack;
     FirebaseDatabase trackDataBase;
     DatabaseReference trackRef;
-
+    List<Track> trackList;
 
 
     @Override
@@ -39,7 +45,7 @@ public class addTrackActitvty extends AppCompatActivity {
         artistName =findViewById(R.id.textView);
         rating = findViewById(R.id.rating);
         listViewTrack = findViewById(R.id.listViewTrack);
-
+        trackList = new ArrayList<>();
 
         Intent intent = getIntent();
         String name = intent.getStringExtra(MainActivity.ARTIST_NAME);
@@ -54,9 +60,32 @@ public class addTrackActitvty extends AppCompatActivity {
                 saveTrack();
             }
         });
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        trackRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                trackList.clear();
+                for (DataSnapshot trackSnapShot : dataSnapshot.getChildren()){
+                    Track track = trackSnapShot.getValue(Track.class);
+                    trackList.add(track);
+                    track_list_adapter adapter = new track_list_adapter(addTrackActitvty.this,trackList);
+                    listViewTrack.setAdapter((adapter));
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     private void saveTrack(){
 
@@ -68,12 +97,12 @@ public class addTrackActitvty extends AppCompatActivity {
             Track track1 = new Track(trackName,id,rat);
             trackRef.child(id).setValue(track1);
             Toast.makeText(this, "song added", Toast.LENGTH_SHORT).show();
-
-
-
-        }else{
+            }else{
             Toast.makeText(this, "enter song", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
+
+
+
+

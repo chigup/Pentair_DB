@@ -11,14 +11,14 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class artist_list_adapter extends ArrayAdapter {
+public class artist_list_adapter extends ArrayAdapter<artist> {
 
     private Activity context;
     private List<artist> artistList;
 
     public artist_list_adapter(Activity context, List<artist> artistList){
 
-        super(context,R.layout.list_layout,artistList);
+        super(context,R.layout.artist_list_layout,artistList);
         this.context = context;
         this.artistList = artistList;
 
@@ -28,7 +28,7 @@ public class artist_list_adapter extends ArrayAdapter {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View layoutView = inflater.inflate(R.layout.list_layout,null,true);
+        View layoutView = inflater.inflate(R.layout.artist_list_layout,null,true);
         TextView name = (TextView)layoutView.findViewById(R.id.textViewArtist);
         TextView genre = (TextView)layoutView.findViewById(R.id.textViewGenre);
         artist artist  = artistList.get(position);
