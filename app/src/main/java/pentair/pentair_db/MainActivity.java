@@ -1,7 +1,6 @@
 package pentair.pentair_db;
 
 import android.content.Intent;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
        @Override
        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
            artist artist = artistlist.get(i);
-           Intent intent =  new Intent(getApplicationContext(),Tracks.class);
+           Intent intent =  new Intent(getApplicationContext(),addTrackActitvty.class);
            intent.putExtra(ARTIST_NAME,artist.getArtistName());
            intent.putExtra(ARTIST_ID,artist.getArtistId());
            startActivity(intent);
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot artistSnapShot: dataSnapshot.getChildren()){
                         artist artist = artistSnapShot.getValue(artist.class);
                         artistlist.add(artist);
-                        list_adapter adapter = new list_adapter(MainActivity.this, artistlist);
+                        artist_list_adapter adapter = new artist_list_adapter(MainActivity.this, artistlist);
                         artistListView.setAdapter((adapter));
 
 

@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class list_adapter extends ArrayAdapter {
+public class artist_list_adapter extends ArrayAdapter {
 
     private Activity context;
     private List<artist> artistList;
 
-    public  list_adapter(Activity context, List<artist> artistList){
+    public artist_list_adapter(Activity context, List<artist> artistList){
 
         super(context,R.layout.list_layout,artistList);
         this.context = context;
