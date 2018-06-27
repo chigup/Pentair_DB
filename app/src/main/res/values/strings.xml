@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Pentair_DB</string>
+
+    <array name="genres">
+        <item>rock</item>
+        <item>sufi</item>
+        <item>pop</item>
+    </array>
+</resources>
